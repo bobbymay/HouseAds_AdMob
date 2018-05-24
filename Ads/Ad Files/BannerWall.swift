@@ -1,6 +1,6 @@
 import UIKit
 
-class BannerWall: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class BannerWall: UIViewController {
 	static var banners = [String]()
 	static var showing = false
 	static var verified = false
@@ -127,32 +127,6 @@ class BannerWall: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		})
 	}
 	
-	/// Delegate function
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return BannerWall.banners.count
-	}
-	
-	/// Delegate function
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath)
-		cell.selectionStyle = .none
-		cell.backgroundColor = UIColor.black
-		cell.backgroundView = getImage(indexPath.row)
-		return cell
-	}
-	
-	/// Delegate function
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		guard let mb = UserDefaults.standard.dictionary(forKey: "MyBanners") else { return }
-		guard let idStrings = mb[BannerWall.banners[Int(indexPath.row)]] else { return }
-		let id = (idStrings as AnyObject).components(separatedBy: "_")
-		if id.count > 1 { // if there are two elements, there is an iphone and ipad version
-			Device.type == .phone ? appStore.open(UInt32(id[0])!) : appStore.open(UInt32(id[1])!)
-		} else {
-			appStore.open(UInt32(id[0])!)
-		}
-	}
-	
 	/// Get image from documents directory
 	func getImage(_ index: Int) -> UIImageView? {
 		guard let doc = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) else {	 return nil }
@@ -167,6 +141,34 @@ class BannerWall: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		guard let tv = main?.view.viewWithTag(8000) else { return }
 		if let 	converted = UIApplication.shared.delegate?.window??.rootViewController?.view.convert(button.frame, from: tv) {
 			Ads.buy(frame: converted)
+		}
+	}
+	
+}
+
+/// Delegate functions
+extension BannerWall: UITableViewDelegate, UITableViewDataSource {
+	
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return BannerWall.banners.count
+	}
+	
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath)
+		cell.selectionStyle = .none
+		cell.backgroundColor = UIColor.black
+		cell.backgroundView = getImage(indexPath.row)
+		return cell
+	}
+	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		guard let mb = UserDefaults.standard.dictionary(forKey: "MyBanners") else { return }
+		guard let idStrings = mb[BannerWall.banners[Int(indexPath.row)]] else { return }
+		let id = (idStrings as AnyObject).components(separatedBy: "_")
+		if id.count > 1 { // if there are two elements, there is an iphone and ipad version
+			Device.type == .phone ? appStore.open(UInt32(id[0])!) : appStore.open(UInt32(id[1])!)
+		} else {
+			appStore.open(UInt32(id[0])!)
 		}
 	}
 	
