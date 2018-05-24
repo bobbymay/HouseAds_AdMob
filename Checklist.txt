@@ -1,0 +1,7 @@
+
+CHECK LIST:
+
+get Admob ID
+get product ID and set productID in AdsPurchase
+change testMode = false in Ads
+
