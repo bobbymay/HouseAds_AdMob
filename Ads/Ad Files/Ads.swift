@@ -1,6 +1,7 @@
 import UIKit
 import GoogleMobileAds
 
+
 /// Wrapper to control everything
 class Ads: NSObject {
 	static var started = false
@@ -9,16 +10,19 @@ class Ads: NSObject {
 	private static let wall = BannerWall()
 	private static let purchase = AdsPurchase()
 	
+	
 	/// Was in-app purchase used to remove ads
 	static var removed: Bool {
 		return UserDefaults.standard.bool(forKey: "AdsPurchased")
 	}
+	
 	
 	/// Is AdMob or in-house banner showing
 	static var showing: Bool {
 		if AdMob.showing || TopBanner.showing { return true }
 		return false
 	}
+	
 	
 	/// Brings AdMob or in-house banner to the front of the screen
 	static func bringToFront() {
@@ -30,6 +34,7 @@ class Ads: NSObject {
 		}
 	}
 	
+	
 	/// Returns the height of AdMob or in-house banner
 	static var height: CGFloat {
 		switch true {
@@ -38,6 +43,7 @@ class Ads: NSObject {
 		default: return 0.0
 		}
 	}
+	
 	
 	/// Starts everything
 	static func start() {
@@ -62,10 +68,12 @@ class Ads: NSObject {
 			}
 		}
 		
+		
 		// if changing the orientation is not supported, deleted this and change this class to struct
 		UIDevice.current.beginGeneratingDeviceOrientationNotifications()
 		NotificationCenter.default.addObserver(self,		selector: #selector(Ads.orientationChanged(notification:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
 	}
+	
 	
 	/// Shows wall of banners
 	static func showWall() {
@@ -74,10 +82,12 @@ class Ads: NSObject {
 		}
 	}
 	
+	
 	/// Remove ads
 	static func buy(frame: CGRect) {
-		purchase.removeAds(id: AdsPurchase.productID, frame: frame)
+		purchase.removeAds(frame: frame)
 	}
+	
 	
 	/// Ads have been purchased to be removed
 	static func purchased() {
@@ -104,6 +114,7 @@ class Ads: NSObject {
 		if BannerWall.showing { BannerWall.resize() }
 	}
 	
+	
 	/// Handles orientation changes (delete if not supported)
 	@objc static func orientationChanged(notification: NSNotification) {
 		
@@ -118,6 +129,7 @@ class Ads: NSObject {
 		
 		if BannerWall.showing { BannerWall.resize() }
 	}
+	
 	
 }
 

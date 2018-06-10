@@ -1,6 +1,7 @@
 import UIKit
 
 struct Banners {
+	
 	static var finished = false
 	static var finalCount = -1
 	
@@ -9,6 +10,7 @@ struct Banners {
 		static var trying = false
 		static var attempted = false
 	}
+	
 	
 	/// Banner count
 	static var count: Int {
@@ -26,15 +28,16 @@ struct Banners {
 		return count
 	}
 	
+	
 	/// Gets file that holds apple ids and banner image names
 	static func getFile() {
+		
 		// avoid file being read as often through data connectivity. File will be downloaded 1, 2, 5, 10, 15, 20... opens, through data connectivity
 		if Internet.connectedBy != .wifi {
 			let starts = UserDefaults.standard.integer(forKey: "adStarts")
-			if starts > 2 && starts % 5 != 0 {
-				return
-			}
+			if starts > 2 && starts % 5 != 0 { return }
 		}
+		
 		File.trying = true
 		Banners.getFrom(web: "http://digitalbananasapps.com/banners/ids.txt", cashe: false) {
 			File.attempted = true
@@ -59,7 +62,12 @@ struct Banners {
 		}
 	}
 	
-	/// Saves names and IDs to UserDefaults
+	
+	/**
+		Saves IDs to UserDefaults
+		- Parameters:
+    - file: Data read from file on website with image names and app IDs
+ */
 	private static func saveIDs(_ file: [String]) {
 		var nameIds = [String : String]()
 		file.forEach {
@@ -70,7 +78,13 @@ struct Banners {
 		UserDefaults.standard.set(nameIds, forKey: "MyBanners")
 	}
 	
-	/// Takes an array of image names that need to be downloaded along with their IDs
+	
+	/**
+		Downloads images and IDs
+		- Parameters:
+		  - array: This holds image names and IDs separated by a comma
+	  	- first: Is this the first time downloading data
+ */
 	private static func download(_ array: [String], first: Bool = false) {
 		var nameIds = [String : String]()
 		// count banner downloads to know when finished
@@ -90,7 +104,8 @@ struct Banners {
 				}
 			}
 		}
-		// saves images names and IDs
+		
+		// Saves images names and IDs
 		if first { // first time
 			UserDefaults.standard.set(nameIds, forKey: "MyBanners")
 		} else { // update
@@ -100,14 +115,14 @@ struct Banners {
 			}
 		}
 		
-		/// called everytime an image is downloaded successfully
+		/// Called everytime an image is downloaded successfully
 		func downloaded() {
 			// as soon one banner is downloaded, attempt to display it
-			if !TopBanner.created && !AdMob.created && !Ads.removed {
+			if !TopBanner.created && !Ads.removed {
 				TopBanner.created = true
 				DispatchQueue.main.async { _ = TopBanner() }
 			}
-			/// check if all banners are downloaded
+			// check if all banners are downloaded
 			count += 1
 			if count >= array.count && Banners.finished == false {
 				print("Downloads Completed")
@@ -124,7 +139,14 @@ struct Banners {
 		
 	}
 	
-	/// Get data from web
+	
+	/**
+		Get data from web
+		- Parameters:
+    - web: Domain name
+		  - cashe: Should the data be cashed
+		  - closure: Escaping closure to return data that was downloaded
+ */
 	private static func getFrom(web: String, cashe: Bool, closure: @escaping (Any?) -> Void) {
 		guard let url = URL(string: web) else {	return closure(nil)	}
 		// configure based on whether or not to cashe
@@ -142,7 +164,13 @@ struct Banners {
 		}; task.resume()
 	}
 	
-	/// Saves images to the documents folder
+	
+	/**
+		Saves images to the documents folder
+		- Parameters:
+		  - image: Image to be stored
+			 - name: Name of image
+ */
 	private static func save(image: UIImage, name: String) -> Bool {
 		guard let data = UIImagePNGRepresentation(image) ?? UIImageJPEGRepresentation(image, 1) else {	return false	}
 		guard let directory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) as NSURL else {	return false	}
@@ -156,7 +184,12 @@ struct Banners {
 		}
 	}
 	
-	/// Finds banners that need to be downloaded
+	
+	/**
+		Finds banners that need to be downloaded
+		- Parameters:
+	  	- file: Array of strings holding image names and Apple IDs separated by a comma
+		*/
 	private static func missing(_ file: [String]) {
 		guard let doc = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) else {	 return }
 		var banners = [String]()
@@ -169,7 +202,13 @@ struct Banners {
 		download(banners)
 	}
 	
-	/// Delete banners no longer listed on websites file
+	
+	/**
+		Delete banners no longer listed on websites file
+		- Parameters:
+		  - file: Array of strings holding image names and Apple IDs separated by a comma
+		  - stored: Image names and Apple IDs that  is already saved
+		*/
 	private static func delete(file: [String], stored: [String]) {
 		guard let doc = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) else {	 return }
 		for ban in stored {
@@ -193,7 +232,12 @@ struct Banners {
 		Banners.finished = true
 	}
 	
-	/// Prevents banners from being backed up to iCloud (app can be rejected for using more than 2 MB)
+	
+	/**
+		Prevents banners from being backed up to iCloud (app can be rejected for using more than 2 MB)
+		- Parameters:
+	  	- filePath: File path to the app directory
+		*/
 	private static func blockCloud(filePath:String) {
 		//		https://developer.apple.com/library/content/qa/qa1719/_index.html
 		guard FileManager().fileExists(atPath:filePath) else { print("blockCloud: file does not exist"); return }

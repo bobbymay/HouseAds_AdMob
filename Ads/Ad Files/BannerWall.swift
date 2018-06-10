@@ -1,6 +1,7 @@
 import UIKit
 
 class BannerWall: UIViewController {
+	
 	static var banners = [String]()
 	static var showing = false
 	static var verified = false

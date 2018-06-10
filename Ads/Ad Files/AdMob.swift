@@ -3,6 +3,7 @@ import GoogleMobileAds
 
 
 class AdMob: NSObject, GADBannerViewDelegate {
+	
 	static var banner: GADBannerView!
 	static var size = CGSize()
 	static var showing = false
@@ -13,14 +14,14 @@ class AdMob: NSObject, GADBannerViewDelegate {
 		GADMobileAds.configure(withApplicationID: appID)
 	}
 	
-	/// Returns ID, make sure testMode is false to get live ads
+	/// Returns unit ID, make sure testMode is false to get live ads
 	private var unitID: String {
-		return Ads.testMode ? "ca-app-pub-3940256099942544/2934735716" : "LIVE"
+		return Ads.testMode ? "ca-app-pub-3940256099942544/2934735716" : "LIVE_ID"
 	}
 	
 	/// Returns App ID, make sure testMode is false to get live ID
 	private var appID: String {
-		return Ads.testMode ? "ca-app-pub-3940256099942544~1458002511" : "LIVE"
+		return Ads.testMode ? "ca-app-pub-3940256099942544~1458002511" : "LIVE_ID"
 	}
 	
 	/// Create banner
@@ -53,7 +54,6 @@ class AdMob: NSObject, GADBannerViewDelegate {
 	func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
 		print("adMob: Failed")
 		AdMob.showing = false
-		AdMob.size.height = 0
 		AdMob.banner.frame = CGRect(x: 0, y: -bannerView.frame.size.height, width: bannerView.frame.size.width, height: bannerView.frame.size.height)
 		
 		if let mb = UserDefaults.standard.dictionary(forKey: "MyBanners") { // creates top banner
@@ -67,8 +67,7 @@ class AdMob: NSObject, GADBannerViewDelegate {
 	static func removed() {
 		AdMob.banner.delegate = nil
 		AdMob.showing = false
-		AdMob.size.height = 0.0
-		AdMob.size.width = 0.0
+		AdMob.size = CGSize.zero
 	}
 	
 }

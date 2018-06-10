@@ -4,7 +4,11 @@ import StoreKit
 
 class AppStore: NSObject, SKStoreProductViewControllerDelegate {
 	
-	/// Presents the app store
+	/**
+		Opens App Store
+		- Parameters:
+	  	- id: App Store ID
+		*/
 	func open(_ id: UInt32) {
 		if Internet.available {
 			let id = [SKStoreProductParameterITunesItemIdentifier: id]
@@ -21,7 +25,7 @@ class AppStore: NSObject, SKStoreProductViewControllerDelegate {
 		}
 	}
 	
-	/// Dismisses app store
+	/// Dismisses App Store
 	func productViewControllerDidFinish(_ viewController: SKStoreProductViewController) {
 		viewController.presentingViewController?.dismiss(animated: true, completion: nil)
 	}

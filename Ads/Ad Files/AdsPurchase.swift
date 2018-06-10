@@ -5,26 +5,30 @@ class AdsPurchase: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObse
 	
 	private lazy var frame = CGRect()
 	
-	/// returns product ID
-	static var productID: String {
+	/// product ID from iTunes Connect
+	var productID: String {
 		return "com.companyName.productID"
 	}
 	
-	/// Attempt to remove ads
-	func removeAds(id: String, frame: CGRect) {
+	/**
+		Attempt to remove ads
+		- Parameters:
+	  	- frame: Frame of button or view that removes ads. This is mostly used for iPad pop-up controller
+		*/
+	func removeAds(frame: CGRect) {
 		if Internet.available {
 			if (UIScreen.main.traitCollection.userInterfaceIdiom == .pad) { self.frame = frame }
 			SKPaymentQueue.default().add(self)
-			request(id)
+			request()
 		} else {
 			alert(title: "No Internet", message: "You need an Internet connection", button: "OK", view: UIApplication.shared.delegate?.window??.rootViewController as! ViewController)
 		}
 	}
 	
 	/// Fetches product information
-	func request(_ id: String) {
+	func request() {
 		if SKPaymentQueue.canMakePayments() {
-			let product: SKProductsRequest = SKProductsRequest(productIdentifiers: NSSet(object: id) as! Set<String>)
+			let product: SKProductsRequest = SKProductsRequest(productIdentifiers: NSSet(object: productID) as! Set<String>)
 			product.delegate = self
 			product.start()
 			print("Fetching Products")
@@ -100,3 +104,11 @@ class AdsPurchase: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObse
 	}
 	
 }
+
+
+
+
+
+
+
+

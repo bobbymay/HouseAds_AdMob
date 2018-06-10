@@ -1,6 +1,7 @@
 import UIKit
 
 class TopBanner: NSObject {
+	
 	static var created = false
 	static var showing = false
 	static var height: CGFloat = 0.0
