@@ -1,6 +1,6 @@
 House Ads with Google's AdMob
 =============================
-Displays Google's AdMob banner. Additionally, downloads, saves, and can display personal banners (house ads), along with displaying a banner wall.
+Displays Google's [AdMob banner](https://developers.google.com/admob/ios/banner). Additionally, downloads, saves, and displays personal banners (house ads), along with the ability to display a banner wall.
 
 ![example](https://github.com/bobbymay/HouseAds_AdMob/blob/master/example.gif)
 
@@ -29,7 +29,11 @@ Ads.start()
 ```swift
 Ads.showWall()
 ```
-Banner sizes are 350x50 for iPhone and 728x90 for iPad. Code will obviously need to be changed to download your own data. You can do this in the Banners file. 
+You can change the code to download your own data in the [Banners.swift](https://github.com/bobbymay/HouseAds/blob/master/Ads/Ad%20Files/Banners.swift) file.
+
+### Sizes:
+iPhone: 350x50  
+iPad: 728x90 
 
 ### Requirements:
 iOS 10.0 - Swift 3.1
